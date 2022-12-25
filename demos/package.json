@@ -1,0 +1,20 @@
+{
+  "name": "demos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "01-test.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint src/**  --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.30.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^29.3.1"
+  }
+}

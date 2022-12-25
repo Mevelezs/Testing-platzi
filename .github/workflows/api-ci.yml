@@ -19,7 +19,7 @@ jobs: # aquí se configuran los requerimientos del proyecto
       - name: Setup Nodejs # configurando node
         uses: actions/setup-node@v2 # accion para conf. node
         with: # con
-          node-version: 14 # versión de node
+          node-version: 19 # versión de node
           cache: 'npm' # solicitando cahé
           cache-dependency-path: ./api/packege-lock.json # de donde sale el cahé
       - name: install #instalando dependencias

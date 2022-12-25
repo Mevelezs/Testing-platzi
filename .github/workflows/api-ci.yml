@@ -1,9 +1,10 @@
 name : API CI
 # on: [push]  cada que se haga un commit se corre éste archivo, config para repos sensillos
-on: push
-  paths:
-    - "./api/**" # configuracíon para proyectos que tienen mś de un repo, aqui se ejecuta cuando hay cambios en la carpeta api
-    - ".github/workflows/api-ci.yml" # tambien se ejecuta con este archivo
+on:
+  push:
+    paths:
+      - "./api/**" # configuracíon para proyectos que tienen mś de un repo, aqui se ejecuta cuando hay cambios en la carpeta api
+      - ".github/workflows/api-ci.yml" # tambien se ejecuta con este archivo
 
 defaults:
   run:

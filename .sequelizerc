@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = { // para correr las migraciones
   'config': './src/db/config.js',
   'models-path': './src/db/models/',
   'migrations-path': './src/db/migrations/',

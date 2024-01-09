@@ -1,6 +1,6 @@
 const { config } = require('./../config/config');
 
-module.exports = {
+module.exports = { // conecta con la db parala migración => importado desde .sequelizerc
   development: {
     url: config.dbUrl,
     dialect: 'postgres',

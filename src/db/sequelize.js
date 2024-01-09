@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 const { config } = require('../config/config');
 const setupModels = require('./models');
 
-const options = {
+const options = { // conecta con la db para la data
   dialect: 'postgres',
   logging: config.isProd ? false : console.log,
 }

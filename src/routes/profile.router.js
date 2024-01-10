@@ -26,6 +26,7 @@ router.get('/my-user',
   async (req, res, next) => {
     try {
       const userPayload = req.user;
+      console.log(userPayload);
       const user = await userService.findOne(userPayload.sub);
       res.json(user);
     } catch (error) {

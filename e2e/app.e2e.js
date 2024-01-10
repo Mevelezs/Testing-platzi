@@ -1,13 +1,12 @@
 const supertest = require('supertest');
 const express = require('express');
 
-
 describe('test for app', () => {
   let app = null;
   let server = null;
   let api = null;
 
-  beforeEach(() => {
+  beforeAll(() => {
     app = express();
 
     app.get('/hello', (req, res) => {
@@ -27,7 +26,7 @@ describe('test for app', () => {
     expect(response.headers['content-type']).toMatch(/json/); // Pruebas del formato
   });
 
-  afterEach(() => {
-    server.close()
-  } )
+  afterAll(() => {
+    server.close();
+  });
 });

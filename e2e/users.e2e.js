@@ -1,30 +1,32 @@
 const supertest = require('supertest');
 const createApp = require('../src/app.js');
-const { models } = require('../src/db/sequelize.js')
+const { models } = require('../src/db/sequelize.js');
+const { upSeed, downSeed } = require('./utils/seed.js');
 
 describe('test for user path', () => {
   let app = null;
   let server = null;
   let api = null;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = createApp();
 
     server = app.listen(7000);
 
     api = supertest(app);
+
+    await upSeed();
   });
 
   describe('GET /users/{id}', () => {
     test('should return a user', async () => {
-
-      const user = await models.User.findByPk('2'); // trae de la db
+      const user = await models.User.findByPk('1'); // trae de la db
       const { statusCode, body } = await api.get(`/api/v1/users/${user.id}`); // trae de la app
 
       expect(statusCode).toEqual(200); // compara respuesta
       expect(body.id).toEqual(user.id); // compara db y app
-      expect(body.email).toMatch(user.email)
-    })
+      expect(body.email).toMatch(user.email);
+    });
   });
 
   describe('POST /users', () => {
@@ -51,18 +53,22 @@ describe('test for user path', () => {
       expect(body.message).toMatch(/password/);
     });
 
-    // test('should return valid data with status code 200', async () => {
-    //   const inputData = { email: 'mail@mial.co', password: 'admin123' };
-    //   const response = await api.post('/api/v1/users').send(inputData);
+    test('should return a new user', async () => {
+      const inputData = { email: 'mevel@gmai.com', password: 'admin123' };
+      const response = await api.post('/api/v1/users').send(inputData);
 
-    //   expect(response.statusCode).toBe(201);
-    //   expect(response.body.email).toMatch(`${inputData.email}`);
-    // });
+      const user = await models.User.findByPk(response.body.id);
+
+      expect(user).toBeTruthy();
+      expect(response.statusCode).toBe(201);
+      expect(response.body.email).toEqual(inputData.email);
+    });
   });
 
   describe('PUt /users', () => {});
 
-  afterAll(() => {
+  afterAll(async () => {
+    await downSeed();
     server.close();
   });
 });

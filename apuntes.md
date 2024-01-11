@@ -122,3 +122,69 @@ que necesita una apikey
 Probado en myApp.e2e.js
 
 ## ---------> Pruebas a rutas con accessToken <-----------
+
+1. Creamos el archivo que va a provar en al path protegido /profile/my-user.
+
+2. El enpoind trae la info del usuario que está logueado.
+
+3. El access_token de la peticion viaja en el header con un protocolo Bearer de esta forma : `{Authorization: 'Bearer º12123e'}`, por tanto podemos requrirlo desde ahí con un set.
+
+4. Para tener un access token valido toca obligatoriamente hacer un login, asi que lo hacemos y comparamos los datos.
+
+5. Como buena practica colocamos el lging del usuario dentro de dun beforeAll dentro de la suite de prueba; con una variable global guardamos el token, lo asignamos dentro de la suit y lo limpiamos una vez acabado. Esto por si tenemos que hacer login con varios tipos de usuarios.
+
+## -------------> Pruebas a endpoints POST <---------------
+1. Regla de oro => Cada prueba debería tener su propio escenario de datos sin que este influya en pruebas posteriores.
+
+ 1.1 No se prueba con la db de producción.
+
+ 1.2 No se debería probar con la db de desarrollo, no es facil de mantener y perjudica las pruebas posteriores.
+
+ 1.3 Evitar crear datos manualmente.
+
+ 1.4 Tener un escenario de pruebas que se pueda replicar en cada prueba o archivo de pruebas
+
+### ----> Preparando el ambiente de pruebas e2e <----
+1. En el archivo de docker creamos un nuevo servicio de postgres con diferente puerto y sin volumen de persistencia.
+
+2. Creamos las variables de ambiente para la db de pruebas.
+
+3. Nos vamos al config para hacer que lea las nuevas variables de entorno dependiendo del ambiente
+ /src/config/config.js.
+
+4. Para que cargue el ambiente automativamente desde la terminal en el scrip que hace la terea de ejecuter las pruebas y al de coverage le sumamos 'NODE_ENV=e2e' => 
+`"e2e": "NODE_ENV=e2e jest --config ./jest-e2e.json --verbose  --detectOpenHandles --forceExit",`.
+
+
+### ------> Creando un seed de datos manual <---------
+1. Creamos una carpeta dentro de e2e (utils) => creamos el archivo (seed) => creamos dos funciones que interactuen con la db de pruebas, una para poblar y otra para borrar los datos => importamos la conección con sequelize y la usamos de forma sincrona para que se cree la estructura automaticamente aprovechando que no necesitamos persistir => importamos los modelos para crear la data => hacemos los mocks manuales (siempre dentro de un try-cash por si algo sale mal) => importamos la funciones en cada set de pruebas y la ejecutamos al inicio y final.
+
+# ------------> Seed de datos con sequelize <--------------
+https://sequelize.org/docs/v6/other-topics/migrations/#creating-the-first-seed
+
+1. Se tienen que crear en una carpeta especial (seeders); al lado de la de migración.
+
+2. Se crean seeds poe documento de prueba.
+
+3. Copiamos el template de la documentación y lo añadimos a nuetro primer archivo seed.
+
+4. Los seeds de informaciósn se corren dependiendo de como estén organizados los archivos (si los enumeramos se respetará el orden numérico).
+
+5. Los nombres usados para la creación de los atributos de sierto seed deben ser los mismos con los que se crea en la base de datos (modelos => ej  `createdAt: {field: 'created_at'}`).
+
+6. Creamos una tarea en el package.json para correr los seeds y para borrarlos.
+` "seed:all": "sequelize-cli db:seed:all"`
+`"seed:undo": "sequelize-cli db:seed:undo:all"`
+
+7. En el archivo .sequelizerc se configura el path donde van a correr los seeds
+  `'seeders-path': './src/db/seeders/'`
+
+8. Es recomendable vaciar la base de datos para tener los datos incertados por las semillas (esto si se quiere poblar la base de datos de desarrollo automaticamente, sino se sigue haciendo desde insomnia o ...)
+
+# -> Umzug: corriendo los seeds de datos para pruebas e2e <-
+
+https://github.com/sequelize/umzug
+
+1. Hasta ahora el seeds de informacion nos sirven para poblar la db, ahora usaremos umzug para nuestro entorno de pruebas.
+
+2. Instalar `npm i umzug`

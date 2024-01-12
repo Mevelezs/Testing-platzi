@@ -185,6 +185,83 @@ https://sequelize.org/docs/v6/other-topics/migrations/#creating-the-first-seed
 
 https://github.com/sequelize/umzug
 
-1. Hasta ahora el seeds de informacion nos sirven para poblar la db, ahora usaremos umzug para nuestro entorno de pruebas.
+1. Hasta ahora el seeds de informacion nos sirven para poblar la db, ahora usaremos umzug para nuestro entorno de pruebas y sembrar las semillas para la db de prueba.
 
 2. Instalar `npm i umzug`
+
+3. Creamos un archivo (umzug.js) y lo configuramos .
+
+4. LLamamos las funciones en los entornos de prueba (tener en cuenta que llamamos las funciones de umzug para subir  y bajar la db igual a la de sequileze).
+
+5. Cuando corremos las migraciones o seeds por la linea de comando, el queryInterface que es parametro en las funciones que levantan cada una de las pruebas (/db/seeds/*.js) llega de forma directa; pero cuando usamos umzug llegan en un sub contexto y hay que extraerla. => en cada seed hay que preguntar si viene el contexto (en el up y en el down).
+```js
+if(queryInterface.context){
+  queryInterface = queryInterface.context
+}
+```
+
+# ----------------> Mocking en Node.js <------------------
+1. En las pruebas e2e regularmente se evita hacre mocking pero hay casos en que no se puede evitar como por ejemplo servicios de terceros o apis externas => para este caso usaremos mocks para simular el servicio de correo de node-mailer
+
+# ----------> Automatizacion en GitHub Actions <----------
+
+1. Creamos una carpeta al mismo nivel de src .github.
+
+2. Dentro de esta carpeta creamos otra carpeta workflows.
+
+3. Creamos un archivo .yml
+
+4. Lo que queremos hacer en el ambiente de ci es hacer todo lo que se hace cuando corremos el comando npm run e2e pero en la nube cada vez que se hace un commit.
+
+5. La configuración del script que tenemos para correr las pruebas nos manda directamente un entorno de node  => vamos a crear una tarea especifica para el entorno de integración continua
+  `"e2e:ci": "jest --config ./jest-e2e.json --verbose  --detectOpenHandles --forceExit"`
+Para no cambiar la configuración del config lo modificamos, esto actua así; ,
+    `"e2e:ci": "NODE_ENV=ci jest --config ./jest-e2e.json --verbose  --detectOpenHandles --forceExit"`
+si no encuentra el entorno señalado en el script en el  archivo de configuración, lo sale a buscar a la maquina en que está corriendo y carga las variables de entorno puestas en el documento de integración api-ci.yml
+
+El archivo de configuración quedaria de esta manera
+
+```yml
+name: API CI => nombre
+
+on: => cuando y donde se corren las pruebas
+  push: => cada que se hace un push corre las pruebas
+    branches:  ['e2e']=> ramas sobre las cuales se corren
+  pull_request : => cada que se hace un pull corre las pruebas
+    branches: ['main, master']
+
+
+jobs: => tabajos que vamos a hacer
+  e2e: => nombre de la tarea
+    runs-on : ubuntu-latest => sobre que las va a correr
+    container: => añade contenedor con SO
+      image: node:16
+
+    services: => Un contenedor tipo docker para alojar la db.
+      postgres-e2e:
+        image: postgres:13
+        env: => enviroments
+          POSTGRES_DB: db_e2e
+          POSTGRES_USER: e2e
+          POSTGRES_PASSWORD: e2e123
+        ports:
+          - 5432:5432
+
+    steps: => pasos
+    - name: Checkout
+      uses: actions/checkout@v3 => clona el codigo del repo.
+    - name: Install
+      run: npm ci => instala las dependencias cons istalador de github Actions
+    - name: run e2e
+      run: npm run e2e:ci
+      env: => variables de entorno
+        PORT: 3000
+        DATABASE_URL: postgres://e2e:e2e123@postgres-e2e:5432/db_e2e => en lugal de localhost se pone el nombre del servicio
+        API_KEY: 79823
+        JWT_SECRET: 'My stupid key'
+        SMTP_EMAIL: your@email.com
+        SMTP_PASSWORD: password-email
+
+```
+
+6. Despues e que está todo listo guardamos el commit y hacemos push

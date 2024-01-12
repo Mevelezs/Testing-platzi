@@ -2,7 +2,7 @@ const supertest = require('supertest');
 
 const createApp = require('../src/app.js');
 const { models } = require('../src/db/sequelize.js');
-const { upSeed, downSeed } = require('./utils/seed.js');
+const { upSeed, downSeed } = require('./utils/umzug.js');
 
 describe('test for profile path', () => {
   let app = null;

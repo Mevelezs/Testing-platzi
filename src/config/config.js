@@ -23,7 +23,6 @@ const config = { // variables de entorno
   smtpEmail: process.env.SMTP_EMAIL,
   smtpPassword: process.env.SMTP_PASSWORD,
 }
-
 //console.log('CONFIG', config)
 
 module.exports = { config };

@@ -1,4 +1,4 @@
-const sequelize = require('../../src/db/sequelize');
+const sequelize = require('../../src/db/sequelize'); // primera forma
 const bcrypt = require('bcrypt');
 
 const { models } = sequelize;

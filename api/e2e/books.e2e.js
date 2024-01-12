@@ -29,7 +29,8 @@ describe('Test for books', () => {
   beforeAll(async () => {
     app = createApp();
     server = app.listen(3002);
-    const client = new MongoClient(MONGO_URI, { // generando conección con el cliente de mongo con la url
+    const client = new MongoClient(MONGO_URI, {
+      // generando conección con el cliente de mongo con la url
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -38,15 +39,11 @@ describe('Test for books', () => {
     database = client.db(DB_NAME); // estableciendo la db
   });
 
-  afterAll(async () => {
-    await database.dropDatabase(); // borra la info de la db; debería ser en un afteEach para que cada prueba tenga su seed de datos.
-    await server.close();
-  });
-
   describe('test for [GET] /api/v1/books', () => {
     test('should return a list books', async () => {
       // Arrange
-      const seedData = await database.collection('books').insertMany([ // se podrían generar dinamicamente con fake
+      const seedData = await database.collection('books').insertMany([
+        // se podrían generar dinamicamente con fake
         {
           name: 'Book 1',
           year: 1998,
@@ -57,7 +54,6 @@ describe('Test for books', () => {
           year: 1999,
           author: 'Saramago',
         },
-
       ]);
       console.log(seedData);
       // Act
@@ -70,5 +66,10 @@ describe('Test for books', () => {
           expect(body.length).toEqual(seedData.insertedCount);
         });
     });
+  });
+
+  afterAll(async () => {
+    await server.close();
+    await database.dropDatabase(); // borra la info de la db; debería ser en un afteEach para que cada prueba tenga su seed de datos.
   });
 });

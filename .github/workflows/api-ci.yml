@@ -15,11 +15,11 @@ jobs: # aquí se configuran los requerimientos del proyecto
     runs-on: ubuntu-lates # maquina en la que corre (puede ser cualquier sistema operativo)
     steps: # Pasos
       - name: Checkout # chequea el repo
-        uses: actions/checkout@v2 # comando y version que tiene github para clonar el repo
+        uses: actions/checkout@v3 # comando y version que tiene github para clonar el repo
       - name: Setup Nodejs # configurando node
-        uses: actions/setup-node@v2 # accion para conf. node
+        uses: actions/setup-node@v3 # accion para conf. node
         with: # con
-          node-version: 19 # versión de node
+          node-version: 14 # versión de node
           cache: 'npm' # solicitando cahé
           cache-dependency-path: ./api/packege-lock.json # de donde sale el cahé
       - name: install #instalando dependencias

@@ -63,7 +63,7 @@ describe('Test for books services2', () => {
   let service1;
 
   beforeEach(() => {
-    service1 = new BooksService();
+    service1 = new BooksService(); //
     jest.clearAllMocks();
   });
 
@@ -71,22 +71,23 @@ describe('Test for books services2', () => {
     test('should return a list of books', async () => {
       // Arrange
       const fakeBooks1 = generateManyBooks(20);
-      mockGetAll.mockResolvedValue(fakeBooks1);// inyección de dependencias en el espía.
+      mockGetAll.mockResolvedValue(fakeBooks1); // inyección de dependencias en el espía.
       // Act
       const books = await service1.getBooks({});
       console.log(books);
       // Asserts
       expect(books.length).toEqual(fakeBooks1.length);
       expect(mockGetAll).toHaveBeenCalled(); // pregunta si fué llamado.
-      expect(mockGetAll).toHaveBeenCalledTimes(1);// cuantas veces fue llamado
+      expect(mockGetAll).toHaveBeenCalledTimes(1); // cuantas veces fue llamado
       expect(mockGetAll).toHaveBeenCalledWith('books', {}); // si llamado con 'books y la query
     });
 
     test('sholud return a name', async () => {
       const fakeBooks1 = generateOneBook();
+
       mockGetAll.mockResolvedValue(fakeBooks1);
+
       const books = await service1.getBooks();
-      console.log({ 1: books.name, 2: fakeBooks1.name });
       expect(books.name).toEqual(fakeBooks1.name);
     });
   });

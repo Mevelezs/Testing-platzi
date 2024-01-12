@@ -7,7 +7,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root123
     ports:
-      - 27017:27017
+      - 27018:27017
 
   mongo-e2e:
     image: mongo:4.4
